@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light" style="color-scheme: light;"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Made For Anita 🎁</title>
+<style>
+:root{--bg:#1a0b1f;--fg:#fff;--card:#2a1430;--mut:#c9a9d4;--ac:#ff5fa2;--bd:#4a2a55;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#1a0b1f}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
+canvas#rain{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.stage{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+.big{font-size:clamp(28px,7vw,56px);font-weight:800;line-height:1.3;text-shadow:0 0 18px currentColor}
+.big span{display:block;opacity:0;transform:translateY(12px);animation:in .9s forwards}
+@keyframes in{to{opacity:1;transform:none}}
+.cd{font-size:96px;font-weight:800;color:var(--ac);text-shadow:0 0 24px var(--ac)}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:10px 18px;background:var(--ac);color:#fff;font-weight:600}
+button.ghost{background:transparent;border:1px solid var(--bd);color:var(--fg)}
+.gift{font-size:96px;cursor:pointer;animation:bob 1.6s infinite}@keyframes bob{50%{transform:translateY(-10px)}}
+.gif{max-width:200px;border-radius:16px;margin-bottom:16px}
+.book{width:min(92vw,420px);background:#fff8f0;color:#4a2a30;border-radius:14px;padding:20px;box-shadow:0 12px 40px #0008}
+.book img{width:100%;max-height:50vh;object-fit:cover;border-radius:10px}
+.book p{font-size:18px;margin:12px 0}
+.nav{display:flex;gap:10px;justify-content:center;margin-top:14px}
+.bk{position:relative;width:min(92vw,420px);perspective:1800px;touch-action:pan-y}
+.bk .book{width:100%;transform-origin:left center}
+.leaf{position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;will-change:transform,opacity;z-index:3}
+.leaf .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:14px;overflow:hidden}
+.leaf .back{transform:rotateY(180deg);background:linear-gradient(270deg,#f3e1cf,#e9cfb8);box-shadow:inset -12px 0 24px #0002}
+.leaf .cover{background:linear-gradient(135deg,#ff5fa2,#b03a8a);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:26px;font-weight:800;box-shadow:0 12px 40px #0008,inset 10px 0 18px #0003}
+.leaf .cover b{font-size:64px}
+.book small{color:#a07a80}
+.fab{position:fixed;right:14px;top:calc(14px + env(safe-area-inset-top,0px));z-index:5;display:flex;gap:8px}
+.fab button{padding:8px 12px}
+.panel{position:fixed;inset:0;z-index:10;background:#000a;display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:20px}
+.panel.on{display:flex}
+.box{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:20px;width:min(94vw,520px);text-align:left}
+.box h3{margin:16px 0 6px;color:var(--ac)}
+label{display:block;margin:8px 0 4px;color:var(--mut);font-size:14px}
+input[type=text],textarea,select{width:100%;padding:9px;border-radius:8px;border:1px solid var(--bd);background:#12071a;color:#fff;font:inherit}
+input[type=color]{width:48px;height:34px;border:0;background:none}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pg{border:1px dashed var(--bd);border-radius:10px;padding:10px;margin:8px 0}
+.pg img{max-width:100%;max-height:120px;border-radius:6px;display:block;margin-bottom:6px}
+#qr{background:#fff;padding:10px;border-radius:10px;display:inline-block}
+.hearts{position:fixed;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+.hearts i{position:absolute;bottom:-30px;font-style:normal;animation:up linear forwards}
+@keyframes up{to{transform:translateY(-110vh) rotate(30deg);opacity:0}}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ac);padding:8px 16px;border-radius:20px;z-index:20;display:none}
+</style>
+</head>
+<body>
+<script type="application/json" id="state">{"t":3,"rain":"Anita|I love you|♥","c1":"#ff5fa2","c2":"#ffb3d1","main":"selamat ya","mc":"#ffffff","hearts":true,"gif":"images/882e8d2cb1a3dca92f8e5ef77d35cb8d.jpg","pages":[{"img":"images/4bfbf40ff887b58fdef0e03436e948a7.jpg","tx":"halo 💝"},{"img":"images/58b13fe31c13ea5e64a301205ab86006.jpg","tx":"slmt ✨"},{"img":"images/6c77cb6f86924818008dd820fb07c6ec.jpg","tx":"horey 🎂"}]}</script>
+<canvas id="rain" width="1095" height="750"></canvas>
+<div class="hearts" id="hearts"></div>
+<div class="fab" id="fab"></div>
+<div class="stage" id="app"></div>
+<div class="panel" id="settings"><div class="box" id="sbox"></div></div>
+<div class="panel" id="share"><div class="box">
+<h3>🔗 Bagikan</h3>
+<p style="color:var(--mut);font-size:14px">Penerima hanya bisa melihat hasil akhir. Hanya kamu (pemilik) yang bisa mengubah teks dan foto.</p>
+<label>Link</label><input type="text" id="lnk" readonly="">
+<div class="row" style="margin:10px 0"><button id="cp">Salin link</button><button class="ghost" id="dl">Simpan QR</button></div>
+<div style="text-align:center"><div id="qr"></div></div>
+<p style="color:var(--mut);font-size:13px">Siapa pun yang membuka link/QR ini hanya melihat hasil akhir. Mengedit hanya bisa lewat alamat ini diikuti #edit dan password kamu.</p>
+<button class="ghost" onclick="this.closest('.panel').classList.remove('on')">Tutup</button>
+</div></div>
+<div class="toast" id="toast" style="display: none;">Foto terpasang</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+const S=JSON.parse(document.getElementById('state').textContent);
+const $=id=>document.getElementById(id);
+let owner=false,pi=0,phase='start',timer=null;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const toast=m=>{const t=$('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2200)};
+
+/* rain */
+const cv=$('rain'),cx=cv.getContext('2d');let W=0,H=0,drops=[];
+function sz(){W=cv.width=innerWidth||document.documentElement.clientWidth||360;H=cv.height=innerHeight||document.documentElement.clientHeight||640;
+ drops=Array.from({length:Math.ceil(W/22)},()=>({y:-Math.random()*H/22,w:'',i:0}))}
+addEventListener('resize',sz);sz();setTimeout(sz,400);setTimeout(sz,1500);
+setInterval(()=>{
+ if(!W||!H)sz();
+ const words=S.rain.split('|').map(x=>x.trim()).filter(Boolean);if(!words.length)words.push('♥');
+ cx.shadowBlur=0;cx.fillStyle='rgba(26,11,31,.16)';cx.fillRect(0,0,W,H);
+ cx.font='bold 20px monospace';
+ drops.forEach((d,i)=>{
+  if(!d.w){d.w=[...words[Math.random()*words.length|0]];d.i=0}
+  const col=i%2?S.c1:S.c2;cx.fillStyle=col;cx.shadowColor=col;cx.shadowBlur=8;
+  cx.fillText(d.w[d.i],i*22,d.y*22);d.y++;d.i++;if(d.i>=d.w.length)d.w='';
+  if(d.y*22>H&&Math.random()>.95)d.y=0;
+ });
+},60);
+
+/* hearts */
+setInterval(()=>{if(!S.hearts||phase==='start')return;const h=document.createElement('i');
+ h.textContent=['💖','💗','💕','❤️'][Math.random()*4|0];h.style.left=Math.random()*100+'%';
+ h.style.fontSize=14+Math.random()*20+'px';h.style.animationDuration=4+Math.random()*4+'s';
+ $('hearts').appendChild(h);setTimeout(()=>h.remove(),8000)},500);
+
+/* views */
+function view(){
+ const a=$('app');
+ if(phase==='start'){
+  a.innerHTML=(S.gif?`<img class="gif" src="${esc(S.gif)}">`:'')+`<div class="gift" id="g">🎁</div><p style="color:var(--mut)">${esc(S.gtxt??'Nhấn vào hộp quà')}</p>`;
+  $('g').onclick=()=>{phase='count';let n=S.t;a.innerHTML=`<div class="cd" id="n">${n}</div>`;
+   timer=setInterval(()=>{n--;if(n<=0){clearInterval(timer);phase='main';view()}else $('n').textContent=n},1000)};
+ }else if(phase==='main'){
+  const L=S.main.split('|').map(s=>s.trim()).filter(Boolean);
+  a.innerHTML=`<div class="big" style="color:${S.mc}">${L.map((l,i)=>`<span style="animation-delay:${i*.9}s">${esc(l)}</span>`).join('')}</div><div style="margin-top:28px;opacity:0;animation:in .8s ${L.length*.9+.4}s forwards"><button id="op">📖 Buka buku</button></div>`;
+  $('op').onclick=()=>{phase='book';pi=0;cov=true;view()};
+ }else{renderBook(cov);cov=false}
+}
+let cov=false,busy=false;
+const pageHTML=(i)=>{const p=S.pages[i];return `${p.img?`<img src="${esc(p.img)}" alt="">`:''}<p>${esc(p.tx)}</p><small>${i+1}/${S.pages.length}</small>`};
+function renderBook(cover){
+ const a=$('app');
+ a.innerHTML=`<div class="bk" id="bk"><div class="book" id="cur">${pageHTML(pi)}</div></div>
+ <div class="nav"><button class="ghost" id="pv" ${pi?'':'disabled'}>←</button><button class="ghost" id="rp">⟲ Ulang</button><button class="ghost" id="nx" ${pi<S.pages.length-1?'':'disabled'}>→</button></div>`;
+ $('pv').onclick=()=>flip(-1);$('nx').onclick=()=>flip(1);$('rp').onclick=()=>{if(!busy){phase='start';view()}};
+ let x0=null;const bk=$('bk');
+ bk.ontouchstart=e=>x0=e.touches[0].clientX;
+ bk.ontouchend=e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>45)flip(dx<0?1:-1)};
+ if(cover){busy=true;const l=mkLeaf(`<div class="face cover front"><b>🎁</b>${esc(S.cover??'Made For Anita')}</div>`);$('bk').appendChild(l);turn(l,0,-180,1300,()=>{l.remove();busy=false})}
+}
+function mkLeaf(front){const l=document.createElement('div');l.className='leaf';l.innerHTML=front+'<div class="face back"></div>';return l}
+function turn(l,from,to,ms,done){
+ const fwd=to<from,k=fwd?[{transform:`rotateY(${from}deg)`,opacity:1,offset:0},{opacity:1,offset:.6},{transform:`rotateY(${to}deg)`,opacity:0,offset:1}]
+ :[{transform:`rotateY(${from}deg)`,opacity:0,offset:0},{opacity:1,offset:.4},{transform:`rotateY(${to}deg)`,opacity:1,offset:1}];
+ const an=l.animate(k,{duration:ms,easing:'cubic-bezier(.45,.05,.2,1)',fill:'forwards'});
+ an.onfinish=done;an.oncancel=done;
+}
+function flip(d){
+ const ni=pi+d;if(busy||ni<0||ni>=S.pages.length)return;busy=true;
+ const bk=$('bk'),cur=$('cur');
+ if(d>0){
+  const l=mkLeaf(`<div class="face book">${pageHTML(pi)}</div>`);
+  cur.innerHTML=pageHTML(ni);bk.appendChild(l);
+  turn(l,0,-180,1000,()=>{pi=ni;busy=false;renderBook(false)});
+ }else{
+  const l=mkLeaf(`<div class="face book">${pageHTML(ni)}</div>`);
+  bk.appendChild(l);
+  turn(l,-180,0,1000,()=>{pi=ni;busy=false;renderBook(false)});
+ }
+}
+
+/* owner UI */
+function settings(){
+ const pgs=S.pages.map((p,i)=>`<div class="pg">${p.img?`<img src="${esc(p.img)}">`:''}
+ <input type="file" accept="image/*" data-i="${i}" class="up"><label>Teks halaman ${i+1}</label><input type="text" data-k="tx" data-i="${i}" value="${esc(p.tx)}"></div>`).join('');
+ $('sbox').innerHTML=`<h3>⚙️ Pengaturan (hanya pemilik)</h3>
+ <label>Teks di bawah kado</label><input type="text" id="gt" value="${esc(S.gtxt??'Nhấn vào hộp quà')}">
+ <label>Teks di sampul buku</label><input type="text" id="cvt" value="${esc(S.cover??'Made For Anita')}">
+ <label>Waktu hitung mundur</label><select id="t">${[3,5,10].map(n=>`<option ${S.t==n?'selected':''}>${n}</option>`).join('')}</select>
+ <label>Teks hujan huruf (pisah dengan |)</label><input type="text" id="rtxt" value="${esc(S.rain)}">
+ <div class="row"><label>Warna 1</label><input type="color" id="c1" value="${S.c1}"><label>Warna 2</label><input type="color" id="c2" value="${S.c2}"></div>
+ <label>Teks utama (pisah baris dengan |)</label><textarea id="main" rows="3">${esc(S.main)}</textarea>
+ <div class="row"><label>Warna teks</label><input type="color" id="mc" value="${S.mc}"></div>
+ <label><input type="checkbox" id="hr" ${S.hearts?'checked':''}> Efek hati</label>
+ <label>Gambar animasi / GIF (opsional)</label>${S.gif?`<img src="${esc(S.gif)}" style="max-height:80px;display:block">`:''}<input type="file" accept="image/*" class="up" data-i="gif">
+ <h3>📖 Halaman buku</h3>${pgs}
+ <div class="row" style="margin-top:14px"><button id="ap">🎉 Simpan & terapkan</button><button class="ghost" onclick="$('settings').classList.remove('on')">Batal</button></div>`;
+ document.querySelectorAll('.up').forEach(f=>f.onchange=async()=>{
+  if(!f.files[0])return;
+  try{toast('Memproses foto…');const r={url:await shrink(f.files[0])};
+   if(f.dataset.i==='gif')S.gif=r.url;else S.pages[+f.dataset.i].img=r.url;grab();settings();toast('Foto terpasang')}catch(e){toast('Gagal unggah')}});
+ $('ap').onclick=async()=>{grab();$('settings').classList.remove('on');await save()};
+}
+function grab(){
+ if(!$('t'))return;S.t=+$('t').value;S.gtxt=$('gt').value;S.cover=$('cvt').value;S.rain=$('rtxt').value;S.c1=$('c1').value;S.c2=$('c2').value;
+ S.main=$('main').value;S.mc=$('mc').value;S.hearts=$('hr').checked;
+ document.querySelectorAll('[data-k=tx]').forEach(i=>S.pages[+i.dataset.i].tx=i.value);
+}
+function shrink(file,max=900,q=.78){return new Promise((ok,no)=>{const im=new Image(),u=URL.createObjectURL(file);
+ im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');
+  c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',q))};
+ im.onerror=no;im.src=u})}
+async function save(){
+ const pw=sessionStorage.getItem('pw');
+ try{const r=await fetch('api/gift',{method:'POST',headers:{'content-type':'application/json','x-password':pw},body:JSON.stringify({state:S})});
+  if(!r.ok)throw 0;toast('Tersimpan ✓');phase='start';view()}catch(e){toast('Gagal menyimpan (cek password / ukuran foto)')}
+}
+function share(){
+ const u=location.origin+location.pathname;$('lnk').value=u;
+ const q=qrcode(0,'M');q.addData(u);q.make();$('qr').innerHTML=q.createSvgTag(6,0);
+ $('share').classList.add('on');
+}
+$('cp').onclick=async()=>{try{await navigator.clipboard.writeText($('lnk').value);toast('Link disalin')}catch(e){$('lnk').select();toast('Salin manual')}};
+$('dl').onclick=()=>{const svg=$('qr').innerHTML,a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));a.download='qr.svg';a.click()};
+
+/* boot */
+(async()=>{
+ try{const r=await fetch('api/gift',{cache:'no-store'});const j=await r.json();if(j.state)Object.assign(S,j.state)}catch(e){}
+ view();
+ if(location.hash==='#edit'){
+  let pw=sessionStorage.getItem('pw')||prompt('Password edit:');
+  if(pw){let ok=false;try{ok=(await fetch('api/gift',{method:'POST',headers:{'content-type':'application/json','x-password':pw},body:'{}'})).ok}catch(e){}
+   if(ok){sessionStorage.setItem('pw',pw);owner=true}else{sessionStorage.removeItem('pw');toast('Password salah')}}
+ }
+ $('fab').innerHTML=owner?'<button id="bs">⚙</button><button id="bh">🔗 Bagikan</button>':'';
+ if(owner){$('bs').onclick=()=>{settings();$('settings').classList.add('on')};$('bh').onclick=share}
+})();
+</script>
+
+
+</body></html>
